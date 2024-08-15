@@ -1,0 +1,27 @@
+[
+    {
+      "company_name": "Techi",
+      "entity_type": "CARRIER",
+      "out_of_service_date": "2023-05-15T10:00:00Z",
+      "status": "Out of Service"
+    },
+    {
+      "company_name": "Alpha Logistics",
+      "entity_type": "BROKER",
+      "out_of_service_date": "2023-06-20T14:30:00Z",
+      "status": "Active"
+    },
+    {
+      "company_name": "Beta Transport",
+      "entity_type": "CARRIER",
+      "out_of_service_date": "2023-05-22T11:45:00Z",
+      "status": "Out of Service"
+    },
+    {
+      "company_name": "Delta Freight",
+      "entity_type": "CARRIER",
+      "out_of_service_date": "2023-07-12T08:20:00Z",
+      "status": "Out of Service"
+    }
+  ]
+  
