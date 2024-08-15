@@ -5,45 +5,36 @@ import { Bar } from 'react-chartjs-2';
 import { TextField, Button, Modal, Box } from '@mui/material';
 import Papa from 'papaparse';
 import { useNavigate } from 'react-router-dom';
-import CircularProgress from '@mui/material/CircularProgress';
 // import LZString from 'lz-string';
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const TableView = () => {
-  const [loader, setLoader] = useState(true)
   const [tableData, setTableData] = useState([]);
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [modalOpen, setModalOpen] = useState(false);
   const [viewSettings, setViewSettings] = useState({});
-  const navigate = useNavigate();
+  const navigate  = useNavigate();
 
-  // Load and parse CSV data
   // Load and parse CSV data
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch('./data.csv');
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder('utf-8');
-        let result;
-        let csvData = '';
-
-        while (!(result = await reader.read()).done) {
-          csvData += decoder.decode(result.value, { stream: true });
-        }
-
-        const parsedData = Papa.parse(csvData, { header: true }).data;
-        setTableData(parsedData);
-        updateChartData(parsedData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoader(false);
+      const response = await fetch('./data.csv');
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let result;
+      let csvData = '';
+  
+      while (!(result = await reader.read()).done) {
+        csvData += decoder.decode(result.value, { stream: true });
       }
+  
+      const parsedData = Papa.parse(csvData, { header: true }).data;
+      setTableData(parsedData);
+      updateChartData(parsedData);
     };
-
+  
     const urlParams = new URLSearchParams(window.location.search);
     const savedSettings = urlParams.get('settings');
     if (savedSettings) {
@@ -51,12 +42,11 @@ const TableView = () => {
       setTableData(parsedSettings.tableData);
       setChartData(parsedSettings.chartData);
       setViewSettings(parsedSettings.viewSettings);
-      setLoader(false); // Loader should be hidden when settings are loaded
     } else {
       fetchData();
     }
   }, []);
-
+  
 
   // Function to update chart data based on filtered data
   const updateChartData = (data) => {
@@ -140,14 +130,14 @@ const TableView = () => {
       request.onerror = (event) => reject(event);
     });
   };
-
+  
   const saveSettingsToDB = async (settings) => {
     const db = await openDB();
     const transaction = db.transaction('settings', 'readwrite');
     transaction.objectStore('settings').put({ id: 'tableSettings', ...settings });
     return transaction.complete;
   };
-
+  
   const loadSettingsFromDB = async () => {
     const db = await openDB();
     const transaction = db.transaction('settings', 'readonly');
@@ -156,7 +146,7 @@ const TableView = () => {
       settings.onsuccess = () => resolve(settings.result);
     });
   };
-
+  
   const handleSaveSettings = async () => {
     const settings = {
       tableData,
@@ -166,7 +156,7 @@ const TableView = () => {
     await saveSettingsToDB(settings);
     alert('Settings saved to IndexedDB!');
   };
-
+  
   const handleLoadSettings = async () => {
     const settings = await loadSettingsFromDB();
     if (settings) {
@@ -202,22 +192,14 @@ const TableView = () => {
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
-  const handleClickPivotView = () => {
+  const handleClickPivotView = () =>{
     navigate("/pivot")
-  }
-
-  if (loader) {
-    return (
-      <Box sx={{ display: 'flex' }}>
-        <CircularProgress color="secondary" />
-      </Box>
-    )
   }
 
   return (
     <div>
       <h2 style={{ padding: "0px 10px" }}>Table view</h2>
-      <Button color="success" varient="outlined" onClick={handleClickPivotView}>Pivot View</Button>
+      <Button  color="success" varient="outlined" onClick={handleClickPivotView}>Pivot View</Button>
       <MaterialReactTable
         columns={columns}
         data={tableData}
