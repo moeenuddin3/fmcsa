@@ -20,22 +20,30 @@ const TableView = () => {
   const navigate = useNavigate();
 
   // Load and parse CSV data
+  // Load and parse CSV data
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('./data.csv');
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder('utf-8');
-      let result;
-      let csvData = '';
+      try {
+        const response = await fetch('./data.csv');
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let result;
+        let csvData = '';
 
-      while (!(result = await reader.read()).done) {
-        csvData += decoder.decode(result.value, { stream: true });
+        while (!(result = await reader.read()).done) {
+          csvData += decoder.decode(result.value, { stream: true });
+        }
+
+        const parsedData = Papa.parse(csvData, { header: true }).data;
+        setTableData(parsedData);
+        updateChartData(parsedData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoader(false);
       }
-
-      const parsedData = Papa.parse(csvData, { header: true }).data;
-      setTableData(parsedData);
-      updateChartData(parsedData);
     };
+
     const urlParams = new URLSearchParams(window.location.search);
     const savedSettings = urlParams.get('settings');
     if (savedSettings) {
@@ -43,10 +51,10 @@ const TableView = () => {
       setTableData(parsedSettings.tableData);
       setChartData(parsedSettings.chartData);
       setViewSettings(parsedSettings.viewSettings);
+      setLoader(false); // Loader should be hidden when settings are loaded
     } else {
       fetchData();
     }
-    setLoader(false)
   }, []);
 
 
