@@ -22,15 +22,19 @@ const TableView = () => {
     const fetchData = async () => {
       const response = await fetch('./data.csv');
       const reader = response.body.getReader();
-      const result = await reader.read();
       const decoder = new TextDecoder('utf-8');
-      const csvData = decoder.decode(result.value);
+      let result;
+      let csvData = '';
+  
+      while (!(result = await reader.read()).done) {
+        csvData += decoder.decode(result.value, { stream: true });
+      }
+  
       const parsedData = Papa.parse(csvData, { header: true }).data;
-
       setTableData(parsedData);
       updateChartData(parsedData);
     };
-
+  
     const urlParams = new URLSearchParams(window.location.search);
     const savedSettings = urlParams.get('settings');
     if (savedSettings) {
@@ -42,6 +46,7 @@ const TableView = () => {
       fetchData();
     }
   }, []);
+  
 
   // Function to update chart data based on filtered data
   const updateChartData = (data) => {
