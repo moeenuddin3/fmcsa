@@ -45,9 +45,9 @@ const TableView = () => {
 
   // Function to update chart data based on filtered data
   const updateChartData = (data) => {
-    const filteredData = data.filter(d => d.out_of_service_date != "");
-    const labels = [...new Set(filteredData.map(d => new Date(d.out_of_service_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })))];
-    const chartDataset = labels.map(label => filteredData.filter(d => new Date(d.out_of_service_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) === label).length);
+    const filteredData = data?.filter(d => d?.out_of_service_date !== "");
+    const labels = [...new Set(filteredData?.map(d => new Date(d?.out_of_service_date)?.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })))];
+    const chartDataset = labels?.map(label => filteredData?.filter(d => new Date(d?.out_of_service_date)?.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) === label).length);
 
     const newChartData = {
       labels,
