@@ -20,7 +20,7 @@ const TableView = () => {
   // Load and parse CSV data
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('/data.csv');
+      const response = await fetch('./data.csv');
       const reader = response.body.getReader();
       const result = await reader.read();
       const decoder = new TextDecoder('utf-8');
