@@ -17,22 +17,22 @@ const PivotView = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('/data.csv'); // Adjust the path to your CSV file as needed
+      const response = await fetch("./data.csv");
       const reader = response.body.getReader();
-      const result = await reader.read();
-      const decoder = new TextDecoder('utf-8');
-      const csvText = decoder.decode(result.value);
-      
-      Papa.parse(csvText, {
-        header: true,
-        dynamicTyping: true,
-        complete: (parsedData) => {
-          setCsvData(parsedData.data);
-          setPivotState({ data: parsedData.data });
-        },
-      });
+      const decoder = new TextDecoder("utf-8");
+      let result;
+      let csvData = "";
+ 
+      while (!(result = await reader.read()).done) {
+        csvData += decoder.decode(result.value, { stream: true });
+      }
+ 
+      const parsedData = Papa.parse(csvData, { header: true }).data;
+   
+      setCsvData(parsedData);
+      setPivotState(parsedData);
     };
-
+ 
     fetchData();
   }, []);
 
