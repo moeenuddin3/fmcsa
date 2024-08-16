@@ -13,7 +13,6 @@ import { Bar } from "react-chartjs-2";
 import { TextField, Button } from "@mui/material";
 import Papa from "papaparse";
 import { useNavigate } from "react-router-dom";
-import CircularProgress from "@mui/material/CircularProgress";
  
 ChartJS.register(
   CategoryScale,
@@ -29,7 +28,6 @@ const TableView = () => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [viewSettings, setViewSettings] = useState({});
   const navigate = useNavigate();
-  const [loadingState, setLoading] = useState(true);
  
   // Load and parse CSV data
   useEffect(() => {
@@ -47,7 +45,7 @@ const TableView = () => {
       const parsedData = Papa.parse(csvData, { header: true }).data;
       setTableData(parsedData);
       updateChartData(parsedData);
-      setLoading(false);
+      
     };
  
     const urlParams = new URLSearchParams(window.location.search);
@@ -57,7 +55,7 @@ const TableView = () => {
       setTableData(parsedSettings.tableData);
       setChartData(parsedSettings.chartData);
       setViewSettings(parsedSettings.viewSettings);
-      setLoading(false);
+      
     } else {
       fetchData();
     }
@@ -243,21 +241,6 @@ const TableView = () => {
       <Button color="success" varient="outlined" onClick={handleClickPivotView}>
         Pivot View
       </Button>
-      {
-       
-          (loadingState) ?
-          <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",    
-            height: "100vh",          
-          }}
-        >
-          <CircularProgress />
-        </div>
-       
-          :
           <>
           <MaterialReactTable
             columns={columns}
@@ -306,7 +289,6 @@ const TableView = () => {
           </div>
           <Bar data={chartData} />
         </>
-      }
     </div>
   );
 };
